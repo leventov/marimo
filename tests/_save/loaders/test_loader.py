@@ -2,7 +2,6 @@
 
 import json
 import os
-import pickle
 import tempfile
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -17,6 +16,7 @@ from marimo._save.loaders.loader import (
     Loader,
     LoaderPartial,
 )
+from marimo._save.pickling import dumps
 from marimo._save.stores.file import FileStore
 from tests._save.loaders.mocks import MockLoader
 
@@ -187,4 +187,4 @@ class TestPickleLoader(ABCTestLoader):
             meta={},
         )
 
-        self.store.put(str(cache_path), pickle.dumps(cache))
+        self.store.put(str(cache_path), dumps(cache))

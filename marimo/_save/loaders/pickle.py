@@ -1,11 +1,11 @@
 # Copyright 2024 Marimo. All rights reserved.
 from __future__ import annotations
 
-import pickle
 from typing import TYPE_CHECKING, Any
 
 from marimo._save.cache import Cache
 from marimo._save.loaders.loader import BasePersistenceLoader, LoaderError
+from marimo._save.pickling import dumps, loads
 
 if TYPE_CHECKING:
     from marimo._save.hash import HashKey
@@ -19,10 +19,10 @@ class PickleLoader(BasePersistenceLoader):
 
     def restore_cache(self, key: HashKey, blob: bytes) -> Cache:
         del key
-        cache = pickle.loads(blob)
+        cache = loads(blob)
         if not isinstance(cache, Cache):
             raise LoaderError(f"Excepted cache object, got{type(cache)}")
         return cache
 
     def to_blob(self, cache: Cache) -> bytes:
-        return pickle.dumps(cache, protocol=pickle.HIGHEST_PROTOCOL)
+        return dumps(cache)

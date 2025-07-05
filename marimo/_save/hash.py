@@ -557,8 +557,7 @@ class BlockHasher:
         # If scoped refs are present, then they are unhashable
         # and we should fallback to normal hash or fail.
         if unhashable := (refs & scoped_refs) - self.execution_refs:
-            # pickle is a python default
-            import pickle
+            from marimo._save.pickling import PicklingError, dumps
 
             failed = []
             exceptions = []
@@ -566,10 +565,10 @@ class BlockHasher:
             # provide better user experience.
             for ref in unhashable:
                 try:
-                    _hashed = pickle.dumps(scope[ref])
+                    _hashed = dumps(scope[ref])
                     content_serialization[ref] = type_sign(_hashed, "pickle")
                     refs.remove(ref)
-                except (pickle.PicklingError, TypeError) as e:
+                except (PicklingError, TypeError) as e:
                     exceptions.append(e)
                     failed.append(ref)
             if failed:
